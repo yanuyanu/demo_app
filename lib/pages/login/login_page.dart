@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:demo_app/pages/home/home_page.dart';
 
 class Login extends StatelessWidget {
   // This widget is the root of your application.
@@ -14,23 +15,9 @@ class Login extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatefulWidget {
-
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-
-  void _incrementCounter() {
-    setState(() {
-
-    });
-  }
-
+class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Center(
         child: Column(
@@ -45,16 +32,23 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               child: TextField(
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Enter Token'
-                ),
+                    border: OutlineInputBorder(), labelText: 'Enter Token'),
               ),
               width: 200,
             ),
             Container(
               child: FlatButton(
                 onPressed: () {
-
+                  Navigator.of(context).pushReplacement(new PageRouteBuilder(
+                      maintainState: true,
+                      opaque: true,
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          new Home(),
+                      transitionDuration: const Duration(seconds: 2),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return child;
+                      }));
                 },
                 child: Text('Login'),
                 color: Colors.blue,

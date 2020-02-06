@@ -56,8 +56,7 @@ class _SplashPageState extends State<SplashPage> {
         pageBuilder: (context, animation, secondaryAnimation) => new Login(),
         transitionDuration: const Duration(seconds: 2),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      return child;
-    }
-        ));
+          return child;
+        }));
   }
 }
