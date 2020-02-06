@@ -24,12 +24,6 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              child: Text(
-                'Token',
-              ),
-              width: 200,
-            ),
-            Container(
               child: TextField(
                 decoration: InputDecoration(
                     border: OutlineInputBorder(), labelText: 'Enter Token'),
