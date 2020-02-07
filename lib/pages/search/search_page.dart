@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:demo_app/pages/menus/drawer_page.dart';
+import 'package:demo_app/pages/favorite/favorite_video_detail_page.dart';
 import 'package:flutter/rendering.dart';
 
 class Search extends StatelessWidget {
@@ -87,31 +88,38 @@ class _SearchPageState extends State<SearchPageState> {
           child: ListView(
             children: <Widget>[
               Card(
-                margin: EdgeInsets.all(60),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  margin:
+                      EdgeInsets.only(left: 60, right: 60, top: 10, bottom: 10),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                   child: Column(
-                children: <Widget>[
-                  Image(image: NetworkImage('https://m.media-amazon.com/images/M/MV5BMTg1NjQwNTI3N15BMl5BanBnXkFtZTcwNDIyNTY1Mw@@._V1_SX300.jpg'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.movie),
-                    title: Text('Rak haeng Siam'),
-                    subtitle:
-                        Text('2007'),
-                  ),
+                    children: <Widget>[
+                      Image(
+                        image: NetworkImage(
+                            'https://m.media-amazon.com/images/M/MV5BMTg1NjQwNTI3N15BMl5BanBnXkFtZTcwNDIyNTY1Mw@@._V1_SX300.jpg'),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.movie),
+                        title: Text('Rak haeng Siam'),
+                        subtitle: Text('2007'),
+                      ),
                       ButtonBar(
                         children: <Widget>[
                           FloatingActionButton(
                             child: Icon(Icons.add),
                             onPressed: () {
-                              
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FavoriteDetail()),
+                              );
                             },
                           ),
                         ],
                       )
-                ],
-              )),
+                    ],
+                  )),
             ],
           ),
         ),
