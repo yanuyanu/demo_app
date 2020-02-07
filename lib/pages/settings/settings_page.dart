@@ -15,10 +15,21 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Settings'),
-      ),
-      drawer: DrawerPage(),
-    );
+        appBar: AppBar(
+          title: Text('Settings'),
+        ),
+        drawer: DrawerPage(),
+        body: ListView(
+          children: ListTile.divideTiles(context: context, tiles: [
+            SwitchListTile(
+                title: Text('Recommended'), value: false, onChanged: (bool value){
+
+                }),
+            ListTile(
+              title: Text('Logout'),
+              leading: Icon(Icons.exit_to_app),
+            ),
+          ]).toList(),
+        ));
   }
 }
