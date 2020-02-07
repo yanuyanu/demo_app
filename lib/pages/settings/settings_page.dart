@@ -22,12 +22,15 @@ class SettingsPage extends StatelessWidget {
         body: ListView(
           children: ListTile.divideTiles(context: context, tiles: [
             SwitchListTile(
-                title: Text('Recommended'), value: false, onChanged: (bool value){
-
-                }),
+                title: Text('Recommended'),
+                value: true,
+                onChanged: (bool value) {}),
             ListTile(
               title: Text('Logout'),
               leading: Icon(Icons.exit_to_app),
+              onTap: () {
+                
+              },
             ),
           ]).toList(),
         ));

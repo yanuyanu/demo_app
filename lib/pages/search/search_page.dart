@@ -81,6 +81,41 @@ class _SearchPageState extends State<SearchPageState> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Container(
+        child: Center(
+          child: ListView(
+            children: <Widget>[
+              Card(
+                
+                  child: Column(
+                children: <Widget>[
+                  Image(image: NetworkImage('https://m.media-amazon.com/images/M/MV5BMTg1NjQwNTI3N15BMl5BanBnXkFtZTcwNDIyNTY1Mw@@._V1_SX300.jpg'),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.album),
+                    title: Text('The Enchanted Nightingale'),
+                    subtitle:
+                        Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
+                  ),
+                  ButtonBar(
+                    children: <Widget>[
+                      ButtonBar(
+                        children: <Widget>[
+                          FlatButton(
+                            child: const Text('EDIT'),
+                            onPressed: () {/* ... */},
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              )),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
