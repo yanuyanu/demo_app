@@ -87,29 +87,29 @@ class _SearchPageState extends State<SearchPageState> {
           child: ListView(
             children: <Widget>[
               Card(
-                
+                margin: EdgeInsets.all(60),
+                clipBehavior: Clip.antiAliasWithSaveLayer,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   child: Column(
                 children: <Widget>[
                   Image(image: NetworkImage('https://m.media-amazon.com/images/M/MV5BMTg1NjQwNTI3N15BMl5BanBnXkFtZTcwNDIyNTY1Mw@@._V1_SX300.jpg'),
                   ),
                   ListTile(
-                    leading: Icon(Icons.album),
-                    title: Text('The Enchanted Nightingale'),
+                    leading: Icon(Icons.movie),
+                    title: Text('Rak haeng Siam'),
                     subtitle:
-                        Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
+                        Text('2007'),
                   ),
-                  ButtonBar(
-                    children: <Widget>[
                       ButtonBar(
                         children: <Widget>[
-                          FlatButton(
-                            child: const Text('EDIT'),
-                            onPressed: () {/* ... */},
+                          FloatingActionButton(
+                            child: Icon(Icons.add),
+                            onPressed: () {
+                              
+                            },
                           ),
                         ],
                       )
-                    ],
-                  )
                 ],
               )),
             ],
