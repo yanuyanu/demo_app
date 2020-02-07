@@ -16,31 +16,34 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Search Video'),
-        bottom: PreferredSize(
-            child: Container(
-              padding:
-                  EdgeInsets.only(left: 25, right: 15, bottom: 10, top: 10),
-              height: 65,
-              child: Center(
-                child: Row(
-                  children: <Widget>[
-                    _buildFilterTextField(3, 'Title'),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    _buildFilterTextField(1, 'YYYY'),
-                    Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: IconButton(
-                          icon: Icon(Icons.search), onPressed: () {}),
-                    ),
-                  ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(120),
+        child: AppBar(
+          title: Text('Search Movie'),
+          bottom: PreferredSize(
+              child: Container(
+                padding:
+                    EdgeInsets.only(left: 25, right: 15, bottom: 10, top: 10),
+                height: 65,
+                child: Center(
+                  child: Row(
+                    children: <Widget>[
+                      _buildFilterTextField(3, 'Title'),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      _buildFilterTextField(1, 'YYYY'),
+                      Padding(
+                        padding: EdgeInsets.only(right: 8.0),
+                        child: IconButton(
+                            icon: Icon(Icons.search), onPressed: () {}),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            preferredSize: const Size.fromHeight(40)),
+              preferredSize: const Size.fromHeight(40)),
+        ),
       ),
       drawer: DrawerPage(),
       body: SearchPageState(),
