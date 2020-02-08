@@ -24,14 +24,25 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
               child: TextField(
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: 'Enter Token'),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none
+                    ), 
+                    hintText: 'Token',
+                    filled: true,
+                    fillColor: Colors.grey[300],
+                    ),
               ),
-              width: 200,
             ),
             Container(
+              width: 350,
               child: FlatButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)
+                ),
                 onPressed: () {
                   Navigator.of(context).pushReplacement(new PageRouteBuilder(
                       maintainState: true,
@@ -50,7 +61,6 @@ class LoginPage extends StatelessWidget {
                 disabledColor: Colors.grey,
                 disabledTextColor: Colors.black,
               ),
-              width: 200,
             ),
           ],
         ),
