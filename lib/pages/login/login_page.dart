@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:demo_app/pages/home/home_page.dart';
 
 class Login extends StatelessWidget {
@@ -15,7 +16,20 @@ class Login extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  setToken(String token) async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.setString('token', token);
+  }
+
+  final tokenTextField = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +40,7 @@ class LoginPage extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
               child: TextField(
+                controller: tokenTextField,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -44,6 +59,7 @@ class LoginPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20)
                 ),
                 onPressed: () {
+                  setToken(tokenTextField.text);
                   Navigator.of(context).pushReplacement(new PageRouteBuilder(
                       maintainState: true,
                       opaque: true,
