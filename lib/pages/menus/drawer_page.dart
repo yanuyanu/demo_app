@@ -34,7 +34,7 @@ class DrawerPage extends StatelessWidget {
             title: Text('Search'),
             leading: Icon(Icons.search),
             onTap: () {
-              _buildOnTapPage(context, Search());
+              _buildOnTapPage(context, SearchPage());
             },
           ),
           ListTile(
