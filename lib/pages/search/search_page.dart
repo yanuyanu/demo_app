@@ -28,7 +28,6 @@ class _SearchPageState extends State<SearchPageState> {
   void _searchMovie(String title, String year) {
     searchMovie(title, year).then((val) => setState(() {
       _resultMovie = searchMovie(title, year);
-      print(_resultMovie);
     }));
   }
 
@@ -75,38 +74,39 @@ class _SearchPageState extends State<SearchPageState> {
 
   Widget cardMovie(Search movie){
     return Card(
-                  margin:
-                      EdgeInsets.only(left: 60, right: 60, top: 10, bottom: 10),
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Column(
-                    children: <Widget>[
-                      Image(
-                        image: NetworkImage(
-                            movie.poster),
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.movie),
-                        title: Text(movie.title),
-                        subtitle: Text(movie.year),
-                      ),
-                      ButtonBar(
-                        children: <Widget>[
-                          FloatingActionButton(
-                            child: Icon(Icons.add),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FavoriteDetail()),
-                              );
-                            },
-                          ),
-                        ],
-                      )
-                    ],
-                  ));
+      margin:
+          EdgeInsets.only(left: 60, right: 60, top: 10, bottom: 10),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8)),
+      child: Column(
+        children: <Widget>[
+          Image(
+            image: NetworkImage(
+                movie.poster),
+          ),
+          ListTile(
+            leading: Icon(Icons.movie),
+            title: Text(movie.title),
+            subtitle: Text(movie.year),
+          ),
+          ButtonBar(
+            children: <Widget>[
+              FloatingActionButton(
+                heroTag: movie.imdbID,
+                child: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FavoriteDetail(imdbID: movie.imdbID,)),
+                  );
+                },
+              ),
+            ],
+          )
+        ],
+      ));
   }
 
   @override
@@ -149,6 +149,10 @@ class _SearchPageState extends State<SearchPageState> {
       body: FutureBuilder(
         future: _resultMovie,
         builder: (context, projectSnap) {
+          if(projectSnap.connectionState == ConnectionState.waiting){
+            return Center(
+              child: CircularProgressIndicator());
+          }
           if ((projectSnap.connectionState == ConnectionState.none &&
             !projectSnap.hasData) || (projectSnap.hasData && projectSnap.data.response == 'False')) {
             //print('project snapshot data is: ${projectSnap.data}');
@@ -211,8 +215,8 @@ class Search {
     return Search(
       year: json['Year'],
       title: json['Title'],
-      imdbID: json['titleID'],
-      type: json['type'],
+      imdbID: json['imdbID'],
+      type: json['Type'],
       poster: json['Poster'],
     );
   }
