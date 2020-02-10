@@ -9,15 +9,6 @@ class FavoriteDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Movie Editor'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.save), onPressed: () {}),
-          SizedBox(
-            width: 30,
-          ),
-        ],
-      ),
       body: FavoriteDetailPage(
         imdbID: imdbID,
       ),
@@ -46,7 +37,7 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
   void initState() {
     super.initState();
 
-    _resultMovieDetail = searchMovieById(widget.imdbID);
+    _resultMovieDetail = searchMovieFromApiById(widget.imdbID);
   }
 
   resultMovieDetail(Movie movie){
@@ -74,8 +65,9 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 5),
-                child: TextField(
+                child: TextFormField(
                   decoration: InputDecoration(
+                    hoverColor: Colors.black,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
@@ -88,7 +80,7 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 5),
-                child: TextField(
+                child: TextFormField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -116,12 +108,12 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
                     fillColor: Colors.grey[300],
                     hintText: 'Rating',
                   ),
-                  initialValue: movie?.ratings[0]?.value,
+                  initialValue: movie.rating?.toString(),
                 ),
               ),
               Container(
                 padding: EdgeInsets.symmetric(vertical: 5),
-                child: TextField(
+                child: TextFormField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -142,40 +134,60 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Movie Editor'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.save), onPressed: () {}),
+          SizedBox(
+            width: 30,
+          ),
+        ],
+      ),
       body: FutureBuilder(
         future: _resultMovieDetail,
         builder: (context, projectSnap) {
           if(projectSnap.connectionState == ConnectionState.waiting){
             return Center(
-              child: CircularProgressIndicator());
+              child: CircularProgressIndicator()
+              );
           }
           if ((projectSnap.connectionState == ConnectionState.none &&
             !projectSnap.hasData)) {
-            //print('project snapshot data is: ${projectSnap.data}');
             return Container();
           }
-          Movie project = projectSnap.data;
-          return resultMovieDetail(project);
+          Movie movieDetail = projectSnap.data;
+          return resultMovieDetail(movieDetail);
         }),
     );
   }
 }
 
-Future<Movie> searchMovieById(String imdbID) async {
+  Future<Movie> searchMovieFromApiById(String imdbID) async {
+
+    var uriApi = Uri.https('demo-video-ws-chfmsoli4q-ew.a.run.app', '/video-ws/videos/$imdbID');
+
+    final response = await http.get(uriApi, headers: {
+      'token':'userTest',
+    });
+
+    if (response.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      Movie result = Movie.fromJson(json.decode(response.body), true);
+      return result;
+    } else {
+
     var queryParameters = {
       'i': imdbID,
       'apikey': '25867ddb',
     };
 
-    var uri = Uri.http('www.omdbapi.com', '/', queryParameters);
+    var uriOmdb = Uri.http('www.omdbapi.com', '/', queryParameters);
 
-    final response = await http.get(uri);
-
+    final response = await http.get(uriOmdb);
     if (response.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      Movie result = Movie.fromJson(json.decode(response.body));
+      Movie result = Movie.fromJson(json.decode(response.body), false);
       return result;
-    } else {
+    }
       // If that response was not OK, throw an error.
       throw Exception('Failed to load post');
     }
@@ -187,6 +199,7 @@ class Movie {
   final String imdbID;
   final String type;
   final String poster;
+  final String rating;
   final List<Rating> ratings;
 
   Movie(
@@ -195,10 +208,21 @@ class Movie {
     this.imdbID,
     this.type,
     this.poster,
+    this.rating,
     [this.ratings]
   );
 
-  factory Movie.fromJson(Map<String, dynamic> json) {
+  factory Movie.fromJson(Map<String, dynamic> json, bool isFromApi) {
+    if(isFromApi){
+      return Movie(
+        json['title'],
+        json['year'],
+        json['id'],
+        json['type'],
+        json['poster'],
+        json['rating'].toString(),
+      );
+    }
     if (json['Ratings'] != null) {
       var tagObjsJson = json['Ratings'] as List;
       List<Rating> _ratings =
@@ -209,6 +233,7 @@ class Movie {
         json['imdbID'],
         json['Type'],
         json['Poster'],
+        _ratings[0].value,
         _ratings
       );
     }else{
@@ -218,6 +243,7 @@ class Movie {
         json['imdbID'],
         json['Type'],
         json['Poster'],
+        null,
       );
     }
   }

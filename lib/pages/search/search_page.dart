@@ -25,6 +25,13 @@ class _SearchPageState extends State<SearchPageState> {
   final yearFilterTextField = TextEditingController();
   Future<Movie> _resultMovie;
 
+  @override
+  void dispose() {
+    titleFilterTextField.dispose();
+    yearFilterTextField.dispose();
+    super.dispose();
+  }
+
   void _searchMovie(String title, String year) {
     searchMovie(title, year).then((val) => setState(() {
       _resultMovie = searchMovie(title, year);
@@ -39,7 +46,7 @@ class _SearchPageState extends State<SearchPageState> {
         controller: textEditingController,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.only(top: 5, left: 15),
+            contentPadding: EdgeInsets.only(top: 5, left: 15,),
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
