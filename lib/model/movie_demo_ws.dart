@@ -21,35 +21,48 @@ class MovieDemoWs {
     this.priority,
     this.timestamp,
     this.viewed,
+  });
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> result = {
+      "id": imdbID,
+      "label": label,
+      "priority": int.parse(priority),
+      "viewed": viewed,
+      "rating": (double.parse(rating)).round(),
+      "timestamp": timestamp,
+      "title": title,
+      "year": year,
+      "poster": poster,
+    };
+    return result;
   }
-  );
 
   factory MovieDemoWs.fromJson(Map<String, dynamic> json, bool isFromApi) {
-    if(isFromApi){
+    if (isFromApi) {
       return MovieDemoWs(
-        title: json['title'],
-        year: json['year'],
-        imdbID: json['id'],
-        type: json['type'],
-        poster: json['poster'],
-        rating: json['rating']?.toString(),
-        label: json['label'],
-        priority: json['priority']?.toString(),
-        timestamp: json['timestamp'],
-        viewed: json['viewed']
-      );
+          title: json['title'],
+          year: json['year'],
+          imdbID: json['id'],
+          type: json['type'],
+          poster: json['poster'],
+          rating: json['rating']?.toString(),
+          label: json['label'],
+          priority: json['priority']?.toString(),
+          timestamp: json['timestamp'],
+          viewed: json['viewed']);
     }
-      return MovieDemoWs(
-        title: json['Title'],
-        year: json['Year'],
-        imdbID: json['imdbID'],
-        type: json['Type'],
-        poster: json['Poster'],
-        rating: json['imdbRating'],
-        label: null,
-        priority: null,
-        timestamp: (DateTime.now().millisecondsSinceEpoch/1000).round(),
-        viewed: false,
-      );
+    return MovieDemoWs(
+      title: json['Title'],
+      year: json['Year'],
+      imdbID: json['imdbID'],
+      type: json['Type'],
+      poster: json['Poster'],
+      rating: json['imdbRating'],
+      label: "",
+      priority: "0",
+      timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).round(),
+      viewed: false,
+    );
   }
 }

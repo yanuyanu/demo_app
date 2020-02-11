@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:demo_app/model/movie_omdb.dart';
 import 'package:demo_app/model/movie_demo_ws.dart';
 import 'package:http/http.dart' as http;
@@ -68,5 +70,25 @@ class MovieRespository {
       // If that response was not OK, throw an error.
       throw Exception('Failed to load post');
     }
+  }
+
+  void save(MovieDemoWs movie, String token) async{
+    HttpClient client = HttpClient();
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) {
+      final isValidHost = host == "https://demo-video-ws-chfmsoli4q-ew.a.run.app/video-ws/videos/";
+      return isValidHost;
+    });
+
+    Uri uriApi = Uri.parse('https://demo-video-ws-chfmsoli4q-ew.a.run.app/video-ws/videos/');
+
+HttpClientRequest request = await client.postUrl(uriApi);
+request.headers.set('content-type', 'application/x-www-form-urlencoded');
+request.headers.set('token', token);
+
+request.add(utf8.encode(json.encode(movie.toMap())));
+HttpClientResponse response = await request.close();
+String reply = await response.transform(utf8.decoder).join();
+print(reply);
+
   }
 }

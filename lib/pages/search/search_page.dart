@@ -148,8 +148,8 @@ class _SearchPageState extends State<SearchPageState> {
           return ListView.builder(
         itemCount: projectSnap.data.search.length,
         itemBuilder: (context, index) {
-          Search project = projectSnap.data.search[index];
-          return cardMovie(project);
+          Search searchList = projectSnap.data.search[index];
+          return cardMovie(searchList);
         },
       );
         }),

@@ -80,36 +80,62 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
           }
           MovieDemoWs movie = projectSnap.data;
           return Center(
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-          child: ListView(
-            children: <Widget>[
-              Container(
-                child: Card(
-                  child: Column(
-                    children: <Widget>[
-                      Image(
-                        image: NetworkImage(
-                            movie.poster),
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.movie),
-                        title: Text(movie.title),
-                        subtitle: Text(movie.year),
-                      ),
-                    ],
+        child: Scaffold(
+          appBar: AppBar(
+        title: Text('Movie Editor'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.save), onPressed: () {
+
+            MovieDemoWs newMovie = MovieDemoWs(
+              imdbID: movie.imdbID,
+              label: labelController.text,
+              poster: movie.poster,
+              priority: priorityController.text,
+              rating: ratingController.text,
+              timestamp: movie.timestamp,
+              title: movie.title,
+              year: movie.year,
+              viewed: true,
+            );
+
+            MovieRespository().save(newMovie, 'token');
+          }),
+          SizedBox(
+            width: 30,
+          ),
+        ],
+      ),
+                  body: Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+            child: ListView(
+              children: <Widget>[
+                Container(
+                  child: Card(
+                    child: Column(
+                      children: <Widget>[
+                        Image(
+                          image: NetworkImage(
+                              movie.poster),
+                        ),
+                        ListTile(
+                          leading: Icon(Icons.movie),
+                          title: Text(movie.title),
+                          subtitle: Text(movie.year),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              textFieldComponent(movie.label, 'Label', labelController),
-             textFieldComponent(movie.priority, 'Priority', priorityController),
-              SwitchListTile(
-                  title: Text('Viewed'),
-                  value: movie.viewed,
-                  onChanged: (bool value) {}),
-              textFieldComponent(movie.rating, 'Rating', ratingController),
-              textFieldComponent(DateTime.fromMillisecondsSinceEpoch(movie.timestamp * 1000).toString(), 'Timestamp', timestampController),
-            ],
+                textFieldComponent(movie.label, 'Label', labelController),
+               textFieldComponent(movie.priority, 'Priority', priorityController),
+                SwitchListTile(
+                    title: Text('Viewed'),
+                    value: movie.viewed,
+                    onChanged: (bool value) {}),
+                textFieldComponent(movie.rating, 'Rating', ratingController),
+                textFieldComponent(DateTime.fromMillisecondsSinceEpoch(movie.timestamp * 1000).toString(), 'Timestamp', timestampController),
+              ],
+            ),
           ),
         ),
       );
@@ -119,15 +145,6 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Movie Editor'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.save), onPressed: () {}),
-          SizedBox(
-            width: 30,
-          ),
-        ],
-      ),
       body: FutureBuilder<String>(
               future: MovieRespository().getValue(SessionEnum.TOKEN.toString()),
               builder: (BuildContext context, AsyncSnapshot<String> snapshot){
