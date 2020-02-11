@@ -65,6 +65,26 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FutureBuilder<String>(
+              future: MovieRespository().getValue(SessionEnum.TOKEN.toString()),
+              builder: (BuildContext context, AsyncSnapshot<String> tokenSnapshot){
+                switch (tokenSnapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const CircularProgressIndicator();
+                      default:
+                        if (tokenSnapshot.hasError) {
+                          return Text('Error: ${tokenSnapshot.error}');
+                        } else {
+                          return getMovieDetail(tokenSnapshot.data);
+                        }
+                    }
+              }),
+    );
+  }
+
   FutureBuilder getMovieDetail(String token){
     return FutureBuilder(
         future: MovieRespository().findById(widget.imdbID, token),
@@ -95,10 +115,11 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
               timestamp: movie.timestamp,
               title: movie.title,
               year: movie.year,
+              isExistingFavorite: movie.isExistingFavorite,
               viewed: true,
             );
 
-            MovieRespository().save(newMovie, 'token');
+            MovieRespository().saveOrUpdate(newMovie, token);
           }),
           SizedBox(
             width: 30,
@@ -140,25 +161,5 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
         ),
       );
         });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<String>(
-              future: MovieRespository().getValue(SessionEnum.TOKEN.toString()),
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-                switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return const CircularProgressIndicator();
-                      default:
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else {
-                          return getMovieDetail(snapshot.data);
-                        }
-                    }
-              }),
-    );
   }
 }

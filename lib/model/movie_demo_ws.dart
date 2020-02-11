@@ -9,6 +9,7 @@ class MovieDemoWs {
   final String priority;
   final int timestamp;
   final bool viewed;
+  final bool isExistingFavorite;
 
   MovieDemoWs({
     this.title,
@@ -21,6 +22,7 @@ class MovieDemoWs {
     this.priority,
     this.timestamp,
     this.viewed,
+    this.isExistingFavorite,
   });
 
   Map<String, dynamic> toMap() {
@@ -38,8 +40,9 @@ class MovieDemoWs {
     return result;
   }
 
-  factory MovieDemoWs.fromJson(Map<String, dynamic> json, bool isFromApi) {
-    if (isFromApi) {
+  factory MovieDemoWs.fromJson(Map<String, dynamic> json, bool isExistingFavorite) {
+    
+    if (isExistingFavorite) {
       return MovieDemoWs(
           title: json['title'],
           year: json['year'],
@@ -50,7 +53,9 @@ class MovieDemoWs {
           label: json['label'],
           priority: json['priority']?.toString(),
           timestamp: json['timestamp'],
-          viewed: json['viewed']);
+          viewed: json['viewed'],
+          isExistingFavorite: isExistingFavorite,
+      );
     }
     return MovieDemoWs(
       title: json['Title'],
@@ -63,6 +68,7 @@ class MovieDemoWs {
       priority: "0",
       timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).round(),
       viewed: false,
+      isExistingFavorite: isExistingFavorite,
     );
   }
 }
