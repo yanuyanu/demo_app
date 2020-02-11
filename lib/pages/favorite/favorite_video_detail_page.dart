@@ -29,6 +29,7 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
 
   Future<Movie> _resultMovieDetail;
 
+
   void processState() {
     setState(() {});
   }
@@ -38,97 +39,6 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
     super.initState();
 
     _resultMovieDetail = searchMovieFromApiById(widget.imdbID);
-  }
-
-  resultMovieDetail(Movie movie){
-    return Center(
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-          child: ListView(
-            children: <Widget>[
-              Container(
-                child: Card(
-                  child: Column(
-                    children: <Widget>[
-                      Image(
-                        image: NetworkImage(
-                            movie.poster),
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.movie),
-                        title: Text(movie.title),
-                        subtitle: Text(movie.year),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hoverColor: Colors.black,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[300],
-                    hintText: 'Label',
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[300],
-                    hintText: 'Priority',
-                  ),
-                ),
-              ),
-              SwitchListTile(
-                  title: Text('Viewed'),
-                  value: false,
-                  onChanged: (bool value) {}),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[300],
-                    hintText: 'Rating',
-                  ),
-                  initialValue: movie.rating?.toString(),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[300],
-                    hintText: 'Modified Date',
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
   }
 
   @override
@@ -155,8 +65,98 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
             !projectSnap.hasData)) {
             return Container();
           }
-          Movie movieDetail = projectSnap.data;
-          return resultMovieDetail(movieDetail);
+          Movie movie = projectSnap.data;
+          return Center(
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+          child: ListView(
+            children: <Widget>[
+              Container(
+                child: Card(
+                  child: Column(
+                    children: <Widget>[
+                      Image(
+                        image: NetworkImage(
+                            movie.poster),
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.movie),
+                        title: Text(movie.title),
+                        subtitle: Text(movie.year),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: TextFormField(
+                  initialValue: movie.label,
+                  decoration: InputDecoration(
+                    hoverColor: Colors.black,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.blue[50],
+                    labelText: 'Label',
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: TextFormField(
+                  initialValue: movie.priority,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.blue[50],
+                    labelText: 'Priority',
+                  ),
+                ),
+              ),
+              SwitchListTile(
+                  title: Text('Viewed'),
+                  value: movie.viewed,
+                  onChanged: (bool value) {}),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.blue[50],
+                    labelText: 'Rating',
+                  ),
+                  initialValue: movie.rating?.toString(),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: TextFormField(
+                  initialValue: DateTime.fromMillisecondsSinceEpoch(movie.timestamp * 1000).toString(),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.blue[50],
+                    labelText: 'Timestamp',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
         }),
     );
   }
@@ -195,69 +195,56 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
 
 class Movie {
   final String title;
+  final String label;
   final String year;
   final String imdbID;
   final String type;
   final String poster;
   final String rating;
-  final List<Rating> ratings;
+  final String priority;
+  final int timestamp;
+  final bool viewed;
 
-  Movie(
+  Movie({
     this.title,
     this.year,
     this.imdbID,
     this.type,
     this.poster,
     this.rating,
-    [this.ratings]
+    this.label,
+    this.priority,
+    this.timestamp,
+    this.viewed,
+  }
   );
 
   factory Movie.fromJson(Map<String, dynamic> json, bool isFromApi) {
     if(isFromApi){
       return Movie(
-        json['title'],
-        json['year'],
-        json['id'],
-        json['type'],
-        json['poster'],
-        json['rating'].toString(),
+        title: json['title'],
+        year: json['year'],
+        imdbID: json['id'],
+        type: json['type'],
+        poster: json['poster'],
+        rating: json['rating']?.toString(),
+        label: json['label'],
+        priority: json['priority']?.toString(),
+        timestamp: json['timestamp'],
+        viewed: json['viewed']
       );
     }
-    if (json['Ratings'] != null) {
-      var tagObjsJson = json['Ratings'] as List;
-      List<Rating> _ratings =
-          tagObjsJson.map((tagJson) => Rating.fromJson(tagJson)).toList();
       return Movie(
-        json['Title'],
-        json['Year'],
-        json['imdbID'],
-        json['Type'],
-        json['Poster'],
-        _ratings[0].value,
-        _ratings
+        title: json['Title'],
+        year: json['Year'],
+        imdbID: json['imdbID'],
+        type: json['Type'],
+        poster: json['Poster'],
+        rating: json['imdbRating'],
+        label: null,
+        priority: null,
+        timestamp: (DateTime.now().millisecondsSinceEpoch/1000).round(),
+        viewed: false,
       );
-    }else{
-      return Movie(
-        json['Title'],
-        json['Year'],
-        json['imdbID'],
-        json['Type'],
-        json['Poster'],
-        null,
-      );
-    }
-  }
-}
-
-class Rating {
-  final String source;
-  final String value;
-  Rating({this.source, this.value});
-
-  factory Rating.fromJson(Map<String, dynamic> json){
-    return Rating(
-      source: json['Source'],
-      value: json['Value'],
-    );
   }
 }
