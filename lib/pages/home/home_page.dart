@@ -1,6 +1,7 @@
+import 'package:demo_app/repository/movie_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/pages/menus/drawer_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:demo_app/common/session_enum.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -22,10 +23,13 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  Future<String> getToken() async{
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String token = preferences.getString('token');
-    return token;
+  Future<String> _getToken;
+
+  @override
+  void initState(){
+    super.initState();
+    
+    _getToken = MovieRespository().getValue(SessionEnum.TOKEN.toString());
   }
 
   @override
@@ -36,22 +40,26 @@ class _HomePageState extends State<HomePage> {
       ),
       drawer: DrawerPage(),
       body: Center(
-        child: FutureBuilder<String>(
-          future: getToken(),
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot){
-            switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const CircularProgressIndicator();
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      return Text(
-                        'Token: ${snapshot.data}',
-                      );
+        child: Column(
+          children: <Widget>[
+            FutureBuilder<String>(
+              future: _getToken,
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot){
+                switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const CircularProgressIndicator();
+                      default:
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Text(
+                            'Token: ${snapshot.data}',
+                          );
+                        }
                     }
-                }
-          }),
+              }),
+          ],
+        ),
       ),
     );
   }

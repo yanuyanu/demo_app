@@ -1,0 +1,4 @@
+enum SessionEnum {
+  TOKEN,
+  RECOMMENDED
+}

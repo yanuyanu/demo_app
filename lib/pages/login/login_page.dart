@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:demo_app/pages/home/home_page.dart';
+import 'package:demo_app/repository/movie_repository.dart';
+import 'package:demo_app/common/session_enum.dart';
 
 class Login extends StatelessWidget {
   // This widget is the root of your application.
@@ -23,12 +24,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  setToken(String token) async{
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString('token', token);
-  }
-
-  final tokenTextField = TextEditingController();
+  final tokenTextFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 30),
               child: TextField(
-                controller: tokenTextField,
+                controller: tokenTextFieldController,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -59,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   borderRadius: BorderRadius.circular(20)
                 ),
                 onPressed: () {
-                  setToken(tokenTextField.text);
+                  MovieRespository().setValue(SessionEnum.TOKEN.toString(), tokenTextFieldController.text);
                   Navigator.of(context).pushReplacement(new PageRouteBuilder(
                       maintainState: true,
                       opaque: true,
@@ -82,5 +78,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    tokenTextFieldController.clear();
+    super.dispose();
   }
 }

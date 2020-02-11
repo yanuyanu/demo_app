@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:convert';
 import 'package:demo_app/pages/menus/drawer_page.dart';
 import 'package:demo_app/pages/favorite/favorite_video_detail_page.dart';
-import 'package:http/http.dart' as http;
+import 'package:demo_app/model/movie_omdb.dart';
+import 'package:demo_app/model/search.dart';
+import 'package:demo_app/repository/movie_repository.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -23,7 +24,7 @@ class SearchPageState extends StatefulWidget {
 class _SearchPageState extends State<SearchPageState> {
   final titleFilterTextField = TextEditingController();
   final yearFilterTextField = TextEditingController();
-  Future<Movie> _resultMovie;
+  Future<MovieOmdb> _resultMovie;
 
   @override
   void dispose() {
@@ -33,8 +34,8 @@ class _SearchPageState extends State<SearchPageState> {
   }
 
   void _searchMovie(String title, String year) {
-    searchMovie(title, year).then((val) => setState(() {
-      _resultMovie = searchMovie(title, year);
+    MovieRespository().findAllByTitleAndYear(title, year).then((val) => setState(() {
+      _resultMovie = MovieRespository().findAllByTitleAndYear(title, year);
     }));
   }
 
@@ -56,27 +57,6 @@ class _SearchPageState extends State<SearchPageState> {
             hintStyle: TextStyle(color: Colors.black26)),
       ),
     );
-  }
-
-  Future<Movie> searchMovie(String title, String year) async {
-    var queryParameters = {
-      'y': year,
-      's': title,
-      'apikey': '25867ddb',
-    };
-
-    var uri = Uri.http('www.omdbapi.com', '/', queryParameters);
-
-    final response = await http.get(uri);
-
-    if (response.statusCode == 200) {
-      // If server returns an OK response, parse the JSON.
-      Movie result = Movie.fromJson(json.decode(response.body));
-      return result;
-    } else {
-      // If that response was not OK, throw an error.
-      throw Exception('Failed to load post');
-    }
   }
 
   Widget cardMovie(Search movie){
@@ -173,58 +153,6 @@ class _SearchPageState extends State<SearchPageState> {
         },
       );
         }),
-    );
-  }
-}
-
-class Movie {
-  final List<Search> search;
-  final String totalResults;
-  final String response;
-
-  Movie(this.totalResults, this.response, [this.search]);
-
-  factory Movie.fromJson(dynamic json) {
-    if (json['Search'] != null) {
-      var tagObjsJson = json['Search'] as List;
-      List<Search> _search =
-          tagObjsJson.map((tagJson) => Search.fromJson(tagJson)).toList();
-      return Movie(
-        json['totalResults'],
-        json['Response'],
-        _search,
-      );
-    } else {
-      return Movie(
-        json['totalResults'],
-        json['Response'],
-      );
-    }
-  }
-}
-
-class Search {
-  final String title;
-  final String year;
-  final String imdbID;
-  final String type;
-  final String poster;
-
-  Search({
-    this.title,
-    this.year,
-    this.imdbID,
-    this.type,
-    this.poster,
-  });
-
-  factory Search.fromJson(Map<String, dynamic> json) {
-    return Search(
-      year: json['Year'],
-      title: json['Title'],
-      imdbID: json['imdbID'],
-      type: json['Type'],
-      poster: json['Poster'],
     );
   }
 }
