@@ -34,36 +34,7 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
   final ratingController = TextEditingController();
   final timestampController = TextEditingController();
 
-
-  void processState() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-  }
-
-  Widget textFieldComponent(String initialValue, String labelText, TextEditingController controller){
-    controller.text = initialValue;
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 5),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          hoverColor: Colors.black,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.blue[50],
-          labelText: labelText,
-        ),
-      ),
-    );
-  }
+  bool _isViewed;
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +57,7 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
   }
 
   FutureBuilder getMovieDetail(String token){
+
     return FutureBuilder(
         future: MovieRespository().findById(widget.imdbID, token),
         builder: (context, projectSnap) {
@@ -104,22 +76,10 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
           appBar: AppBar(
         title: Text('Movie Editor'),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.save), onPressed: () {
+          IconButton(icon: Icon(Icons.save), 
+          onPressed: () {
 
-            MovieDemoWs newMovie = MovieDemoWs(
-              imdbID: movie.imdbID,
-              label: labelController.text,
-              poster: movie.poster,
-              priority: priorityController.text,
-              rating: ratingController.text,
-              timestamp: movie.timestamp,
-              title: movie.title,
-              year: movie.year,
-              isExistingFavorite: movie.isExistingFavorite,
-              viewed: true,
-            );
-
-            MovieRespository().saveOrUpdate(newMovie, token);
+            savingProcess(movie, token);
           }),
           SizedBox(
             width: 30,
@@ -152,7 +112,9 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
                 SwitchListTile(
                     title: Text('Viewed'),
                     value: movie.viewed,
-                    onChanged: (bool value) {}),
+                    onChanged: (bool value) {
+                      _isViewed = value;
+                    }),
                 textFieldComponent(movie.rating, 'Rating', ratingController),
                 textFieldComponent(DateTime.fromMillisecondsSinceEpoch(movie.timestamp * 1000).toString(), 'Timestamp', timestampController),
               ],
@@ -161,5 +123,50 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
         ),
       );
         });
+  }
+
+  Widget textFieldComponent(String initialValue, String labelText, TextEditingController controller){
+    controller.text = initialValue;
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 5),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          hoverColor: Colors.black,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.blue[50],
+          labelText: labelText,
+        ),
+      ),
+    );
+  }
+
+  void savingProcess(MovieDemoWs movie, String token) async{
+    MovieDemoWs newMovie = MovieDemoWs(
+      imdbID: movie.imdbID,
+      label: labelController.text,
+      poster: movie.poster,
+      priority: priorityController.text,
+      rating: ratingController.text,
+      timestamp: movie.timestamp,
+      title: movie.title,
+      year: movie.year,
+      isExistingFavorite: movie.isExistingFavorite,
+      viewed: _isViewed?? movie.viewed,
+    );
+
+    MovieRespository().saveOrUpdate(newMovie, token);
+    final snackBar = SnackBar(
+      content: Text('Save/Update Success and put to your Favorite'),
+      duration: Duration(milliseconds: 1500),
+    );
+    Scaffold.of(context).showSnackBar(snackBar);
+    await Future.delayed(Duration(seconds: 2));
+    Navigator.of(context).pop();
+
   }
 }

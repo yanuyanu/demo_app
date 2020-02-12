@@ -72,7 +72,7 @@ class MovieRespository {
     }
   }
 
-  void saveOrUpdate(MovieDemoWs movie, String token) async{
+  Future<HttpClientResponse> saveOrUpdate(MovieDemoWs movie, String token) async{
     HttpClient client = HttpClient();
     client.badCertificateCallback = ((X509Certificate cert, String host, int port) {
       final isValidHost = host == "https://demo-video-ws-chfmsoli4q-ew.a.run.app/video-ws/videos/";
@@ -97,7 +97,6 @@ class MovieRespository {
     //set request body
     request.add(utf8.encode(json.encode(movie.toMap())));
     HttpClientResponse response = await request.close();
-    print(response.statusCode);
-
+    return response;
   }
 }
