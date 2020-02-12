@@ -1,9 +1,9 @@
 import 'package:demo_app/model/movie_demo_ws.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/pages/menus/drawer_page.dart';
-import 'package:demo_app/pages/favorite/favorite_video_detail_page.dart';
 import 'package:demo_app/repository/movie_repository.dart';
 import 'package:demo_app/common/session_enum.dart';
+import 'package:demo_app/pages/favorite/favorite_video_detail_page.dart';
 
 class FavoriteVideoList extends StatelessWidget {
   @override
@@ -22,21 +22,24 @@ class FavoriteVideoListPage extends StatefulWidget {
 
 class _FavoriteVideoListPageState extends State<FavoriteVideoListPage> {
 
-  // void _searchMovie(String title, String year) {
-  //   MovieRespository().findAllByTitleAndYear(title, year).then((val) => setState(() {
-  //     _resultMovie = MovieRespository().findAllByTitleAndYear(title, year);
-  //   }));
-  // }
-
-  Widget cardMovie(MovieDemoWs movie) {
+  Widget cardMovie(MovieDemoWs movie, String token) {
     return Card(
         margin: EdgeInsets.only(left: 60, right: 60, top: 10, bottom: 10),
         clipBehavior: Clip.antiAliasWithSaveLayer,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Column(
           children: <Widget>[
-            Image(
-              image: NetworkImage(movie.poster),
+            GestureDetector(
+              onTap: (){
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => FavoriteDetail(imdbID: movie.imdbID,)),
+                  );
+              },
+              child: Image(
+                image: NetworkImage(movie.poster),
+              ),
             ),
             ListTile(
               leading: Icon(Icons.movie),
@@ -49,13 +52,10 @@ class _FavoriteVideoListPageState extends State<FavoriteVideoListPage> {
                   heroTag: movie.imdbID,
                   child: Icon(Icons.remove),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FavoriteDetail(
-                                imdbID: movie.imdbID,
-                              )),
-                    );
+                    MovieRespository().delete(token, movie.imdbID);
+                    setState(() {
+                      //just for refresh screen :-P
+                    });
                   },
                 ),
               ],
@@ -76,7 +76,7 @@ class _FavoriteVideoListPageState extends State<FavoriteVideoListPage> {
           builder: (BuildContext context, AsyncSnapshot<String> tokenSnapshot) {
             switch (tokenSnapshot.connectionState) {
               case ConnectionState.waiting:
-                return const CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               default:
                 if (tokenSnapshot.hasError) {
                   return Text('Error: ${tokenSnapshot.error}');
@@ -103,7 +103,7 @@ class _FavoriteVideoListPageState extends State<FavoriteVideoListPage> {
             itemCount: projectSnap.data.movies.length,
             itemBuilder: (context, index) {
               MovieDemoWs movies = projectSnap.data.movies[index];
-              return cardMovie(movies);
+              return cardMovie(movies, token);
             },
           );
         });

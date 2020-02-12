@@ -57,6 +57,22 @@ class MovieRespository {
     }
   }
 
+  Future<http.Response> delete(String token, String id) async {
+    var uriApi = Uri.https('demo-video-ws-chfmsoli4q-ew.a.run.app', '/video-ws/videos/$id');
+    final response = await http.delete(uriApi, headers: {
+      'token': token,
+    });
+
+    if (response.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      
+      return response;
+    } else {
+      // If that response was not OK, throw an error.
+      throw Exception('Failed to load post');
+    }
+  }
+
   Future<MovieDemoWs> findById(String imdbID, String token) async {
     var uriApi = Uri.https('demo-video-ws-chfmsoli4q-ew.a.run.app', '/video-ws/videos/$imdbID');
     final response = await http.get(uriApi, headers: {
