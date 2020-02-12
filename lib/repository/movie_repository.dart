@@ -20,6 +20,11 @@ class MovieRespository {
     return preferences.setString(key, value);
   }
 
+  Future<bool> dispose() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.clear();
+  }
+
   Future<MovieOmdb> findAllByTitleAndYear(String title, String year) async {
     var queryParameters = {
       'y': year,
@@ -100,6 +105,22 @@ class MovieRespository {
       // If that response was not OK, throw an error.
       throw Exception('Failed to load post');
     }
+  }
+
+  Future<MovieDemoWs> findRecommended(String token) async {
+    var uriApi = Uri.https('demo-video-ws-chfmsoli4q-ew.a.run.app', '/video-ws/recommended');
+    final response = await http.get(uriApi, headers: {
+      'token': token,
+    });
+
+    if (response.statusCode == 200) {
+      // If server returns an OK response, parse the JSON.
+      MovieDemoWs result = MovieDemoWs.fromJson(json.decode(response.body), true);
+      return result;
+    }
+
+    // If that response was not OK, throw an error.
+      throw Exception('Failed to load get recommendation movie');
   }
 
   Future<HttpClientResponse> saveOrUpdate(MovieDemoWs movie, String token) async{

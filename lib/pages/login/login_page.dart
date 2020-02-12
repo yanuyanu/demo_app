@@ -1,5 +1,5 @@
+import 'package:demo_app/pages/dashboard/dashboard_page.dart';
 import 'package:flutter/material.dart';
-import 'package:demo_app/pages/home/home_page.dart';
 import 'package:demo_app/repository/movie_repository.dart';
 import 'package:demo_app/common/session_enum.dart';
 
@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                       maintainState: true,
                       opaque: true,
                       pageBuilder: (context, animation, secondaryAnimation) =>
-                          new Home(),
+                          new Dashboard(),
                       transitionDuration: const Duration(seconds: 2),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) {

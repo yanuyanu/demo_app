@@ -16,6 +16,7 @@ class FavoriteVideoList extends StatelessWidget {
 }
 
 class FavoriteVideoListPage extends StatefulWidget {
+  
   @override
   _FavoriteVideoListPageState createState() => _FavoriteVideoListPageState();
 }
@@ -52,10 +53,9 @@ class _FavoriteVideoListPageState extends State<FavoriteVideoListPage> {
                   heroTag: movie.imdbID,
                   child: Icon(Icons.remove),
                   onPressed: () {
-                    MovieRespository().delete(token, movie.imdbID);
-                    setState(() {
-                      //just for refresh screen :-P
-                    });
+                    MovieRespository().delete(token, movie.imdbID).then((response) => setState(() {
+                    
+                    }));
                   },
                 ),
               ],
@@ -76,7 +76,10 @@ class _FavoriteVideoListPageState extends State<FavoriteVideoListPage> {
           builder: (BuildContext context, AsyncSnapshot<String> tokenSnapshot) {
             switch (tokenSnapshot.connectionState) {
               case ConnectionState.waiting:
+                if(tokenSnapshot.data == null){
                 return Center(child: CircularProgressIndicator());
+                }
+                return getMovieList(tokenSnapshot.data);
               default:
                 if (tokenSnapshot.hasError) {
                   return Text('Error: ${tokenSnapshot.error}');
