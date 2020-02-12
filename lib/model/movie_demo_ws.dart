@@ -29,7 +29,7 @@ class MovieDemoWs {
     Map<String, dynamic> result = {
       "id": imdbID,
       "label": label,
-      "priority": int.parse(priority),
+      "priority": int.parse(priority.isEmpty ? "0": priority),
       "viewed": viewed,
       "rating": (double.parse(rating)).round(),
       "timestamp": timestamp,
@@ -65,10 +65,22 @@ class MovieDemoWs {
       poster: json['Poster'],
       rating: json['imdbRating'],
       label: "",
-      priority: "0",
+      priority: null,
       timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).round(),
       viewed: false,
       isExistingFavorite: isExistingFavorite,
     );
+  }
+}
+
+class MoviesDemoWs{
+  final List<MovieDemoWs> movies;
+
+  MoviesDemoWs([this.movies]);
+
+  factory MoviesDemoWs.fromJson(dynamic json) {
+    var tagObjsJson = json as List;
+    List<MovieDemoWs> _movies = tagObjsJson.map((tagJson) => MovieDemoWs.fromJson(tagJson, true)).toList();
+    return MoviesDemoWs(_movies);
   }
 }
