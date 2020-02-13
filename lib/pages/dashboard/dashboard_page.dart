@@ -108,9 +108,8 @@ class _DashboardPageState extends State<DashboardPage> {
                 SwitchListTile(
                     title: Text('Viewed'),
                     value: movie.viewed,
-                    onChanged: (bool value) {
-                      
-                    }),
+                    onChanged: null
+                    ),
                 textFieldComponent(movie.rating, 'Rating'),
                 textFieldComponent(DateTime.fromMillisecondsSinceEpoch(movie.timestamp * 1000).toString(), 'Timestamp'),
               ],
@@ -124,17 +123,10 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget textFieldComponent(String initialValue, String labelText){
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5),
-      child: TextFormField(
-        decoration: InputDecoration(
-          hoverColor: Colors.black,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.blue[50],
-          labelText: labelText,
-        ),
+      child: ListTile(
+        leading: Icon(Icons.star),
+        title: Text(labelText),
+        subtitle: Text(initialValue),
       ),
     );
   }
