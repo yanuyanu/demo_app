@@ -68,8 +68,10 @@ class _SearchPageState extends State<SearchPageState> {
 
   int _calculateTotalPage(String totalPage){
     int total = int.parse(totalPage);
-    if(total % 10 == 0 || total < 10){
+    if(total % 10 == 0){
       return (double.parse(totalPage)/10).round();
+    }else if(total < 10){
+      return 1;
     }else{
       return (double.parse(totalPage)/10).round()+1;
     }
