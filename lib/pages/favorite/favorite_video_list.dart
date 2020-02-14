@@ -99,8 +99,14 @@ class _FavoriteVideoListPageState extends State<FavoriteVideoListPage> {
             return Center(child: CircularProgressIndicator());
           }
           if ((projectSnap.connectionState == ConnectionState.none && !projectSnap.hasData)) {
-            //print('project snapshot data is: ${projectSnap.data}');
             return Container();
+          }
+          if(projectSnap.connectionState == ConnectionState.done && projectSnap.data.movies.length == 0){
+            return Container(
+              child: Center(
+                child: Text('no data found'),
+              ),
+            );
           }
           return ListView.builder(
             itemCount: projectSnap.data.movies.length,

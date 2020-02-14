@@ -143,7 +143,11 @@ class _SearchPageState extends State<SearchPageState> {
           if ((projectSnap.connectionState == ConnectionState.none &&
             !projectSnap.hasData) || (projectSnap.hasData && projectSnap.data.response == 'False')) {
             //print('project snapshot data is: ${projectSnap.data}');
-            return Container();
+            return Container(
+              child: Center(
+                child: Text('no data found'),
+              ),
+            );
           }
           return ListView.builder(
         itemCount: projectSnap.data.search.length,

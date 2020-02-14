@@ -41,7 +41,11 @@ class _DashboardPageState extends State<DashboardPage> {
                           if(recommendedSnapshot.data == 'true'){
                           return getTokenAndRecommendedMovie();
                           }
-                          return Container();
+                          return Container(
+                            child: Center(
+                              child: Text('Setting -> activate Recommended'),
+                            ),
+                          );
                         }
                     }
               }),
