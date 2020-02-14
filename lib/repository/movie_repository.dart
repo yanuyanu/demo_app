@@ -25,10 +25,11 @@ class MovieRespository {
     return preferences.clear();
   }
 
-  Future<MovieOmdb> findAllByTitleAndYear(String title, String year) async {
+  Future<MovieOmdb> findAllByTitleAndYear(String title, String year, int page) async {
     var queryParameters = {
       'y': year,
       's': title,
+      'page': page.toString(),
       'apikey': '25867ddb',
     };
 

@@ -33,10 +33,50 @@ class _SearchPageState extends State<SearchPageState> {
     super.dispose();
   }
 
+  int _currentPage = 1;
+  int _totalPage = 0;
+
+  void _searchNextPage(String title, String year, int page, String totalResults) {
+    if (_currentPage < _totalPage) {
+      setState(() {
+        _currentPage = _currentPage + 1;
+
+        MovieRespository()
+            .findAllByTitleAndYear(title, year, _currentPage)
+            .then((val) => setState(() {
+                  _resultMovie = MovieRespository()
+                      .findAllByTitleAndYear(title, year, _currentPage);
+                  _totalPage = (double.parse(totalResults) / 10).round() +1;
+                }));
+      });
+    }
+  }
+
+  void _searchPreviousPage(String title, String year, int page, String totalResults) {
+    if (_currentPage > 1) {
+      setState(() {
+        _currentPage = _currentPage - 1;
+
+        MovieRespository()
+            .findAllByTitleAndYear(title, year, _currentPage)
+            .then((val) => setState(() {
+                  _resultMovie = MovieRespository()
+                      .findAllByTitleAndYear(title, year, _currentPage);
+                  _totalPage = (double.parse(totalResults) / 10).round() +1;
+                }));
+      });
+    }
+  }
+
   void _searchMovie(String title, String year) {
-    MovieRespository().findAllByTitleAndYear(title, year).then((val) => setState(() {
-      _resultMovie = MovieRespository().findAllByTitleAndYear(title, year);
-    }));
+    MovieRespository()
+        .findAllByTitleAndYear(title, year, 1)
+        .then((val) => setState(() {
+          _currentPage = 1;
+          _totalPage = (double.parse(val.totalResults)/10).round();
+          _resultMovie =
+              MovieRespository().findAllByTitleAndYear(title, year, 1);
+            }));
   }
 
   Expanded _buildFilterTextField(
@@ -47,7 +87,10 @@ class _SearchPageState extends State<SearchPageState> {
         controller: textEditingController,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.only(top: 5, left: 15,),
+            contentPadding: EdgeInsets.only(
+              top: 5,
+              left: 15,
+            ),
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
@@ -59,41 +102,90 @@ class _SearchPageState extends State<SearchPageState> {
     );
   }
 
-  Widget cardMovie(Search movie){
+  Widget cardMovie(Search movie) {
     return Card(
-      margin:
-          EdgeInsets.only(left: 60, right: 60, top: 10, bottom: 10),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18)),
-      child: Column(
-        children: <Widget>[
-          Image(
-            image: NetworkImage(
-                movie.poster == 'N/A' ? 'https://www.archute.com/wp-content/themes/fox/images/placeholder.jpg' : movie.poster),
-          ),
-          ListTile(
-            leading: Icon(Icons.movie),
-            title: Text(movie.title),
-            subtitle: Text(movie.year),
-          ),
-          ButtonBar(
-            children: <Widget>[
-              FloatingActionButton(
-                heroTag: movie.imdbID,
-                child: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FavoriteDetail(imdbID: movie.imdbID,)),
-                  );
-                },
-              ),
-            ],
-          )
+        margin: EdgeInsets.only(left: 60, right: 60, top: 10, bottom: 10),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        child: Column(
+          children: <Widget>[
+            Image(
+              image: NetworkImage(movie.poster == 'N/A'
+                  ? 'https://www.archute.com/wp-content/themes/fox/images/placeholder.jpg'
+                  : movie.poster),
+            ),
+            ListTile(
+              leading: Icon(Icons.movie),
+              title: Text(movie.title),
+              subtitle: Text(movie.year),
+            ),
+            ButtonBar(
+              children: <Widget>[
+                FloatingActionButton(
+                  heroTag: movie.imdbID,
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FavoriteDetail(
+                                imdbID: movie.imdbID,
+                              )),
+                    );
+                  },
+                ),
+              ],
+            )
+          ],
+        ));
+  }
+
+  Widget cardMovieList(MovieOmdb movie) {
+    return ListView.builder(
+      itemCount: movie.search.length,
+      itemBuilder: (context, index) {
+        Search searchList = movie.search[index];
+        return cardMovie(searchList);
+      },
+    );
+  }
+
+  Widget showPageInformation(MovieOmdb movieOmdb) {
+    return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+              color: Colors.black,
+              icon: Icon(Icons.navigate_before),
+              onPressed: () {
+                _searchPreviousPage(
+                    titleFilterTextField.text,
+                    yearFilterTextField.text,
+                    _currentPage,
+                    movieOmdb.totalResults);
+              }),
+          Center(
+              child: Text(
+            'All Data: ${movieOmdb.totalResults}, ' +
+                'Total Page: $_totalPage, ' +
+                'Current Page: $_currentPage',
+            style: TextStyle(fontSize: 15, color: Colors.black),
+          )),
+          IconButton(
+              icon: Icon(Icons.navigate_next),
+              color: Colors.black,
+              onPressed: () {
+                _searchNextPage(
+                    titleFilterTextField.text,
+                    yearFilterTextField.text,
+                    _currentPage,
+                    movieOmdb.totalResults);
+              }),
         ],
-      ));
+        backgroundColor: Colors.blue[50],
+      ),
+      body: cardMovieList(movieOmdb),
+    );
   }
 
   @override
@@ -134,29 +226,28 @@ class _SearchPageState extends State<SearchPageState> {
       ),
       drawer: DrawerPage(),
       body: FutureBuilder(
-        future: _resultMovie,
-        builder: (context, projectSnap) {
-          if(projectSnap.connectionState == ConnectionState.waiting){
-            return Center(
-              child: CircularProgressIndicator());
-          }
-          if ((projectSnap.connectionState == ConnectionState.none &&
-            !projectSnap.hasData) || (projectSnap.hasData && projectSnap.data.response == 'False')) {
-            //print('project snapshot data is: ${projectSnap.data}');
-            return Container(
-              child: Center(
-                child: Text('no data found'),
-              ),
-            );
-          }
-          return ListView.builder(
-        itemCount: projectSnap.data.search.length,
-        itemBuilder: (context, index) {
-          Search searchList = projectSnap.data.search[index];
-          return cardMovie(searchList);
-        },
-      );
-        }),
+          future: _resultMovie,
+          builder: (context, projectSnap) {
+            if (projectSnap.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if ((projectSnap.connectionState == ConnectionState.none &&
+                    !projectSnap.hasData) ||
+                (projectSnap.hasData && projectSnap.data.response == 'False')) {
+              //print('project snapshot data is: ${projectSnap.data}');
+              return Container(
+                child: Center(
+                  child: Text('no data found'),
+                ),
+              );
+            }
+            if (projectSnap.connectionState == ConnectionState.done) {
+              MovieOmdb movie = projectSnap.data;
+              return showPageInformation(movie);
+            }
+
+            return null;
+          }),
     );
   }
 }
