@@ -65,12 +65,12 @@ class _SearchPageState extends State<SearchPageState> {
           EdgeInsets.only(left: 60, right: 60, top: 10, bottom: 10),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8)),
+          borderRadius: BorderRadius.circular(18)),
       child: Column(
         children: <Widget>[
           Image(
             image: NetworkImage(
-                movie.poster),
+                movie.poster == 'N/A' ? 'https://www.archute.com/wp-content/themes/fox/images/placeholder.jpg' : movie.poster),
           ),
           ListTile(
             leading: Icon(Icons.movie),

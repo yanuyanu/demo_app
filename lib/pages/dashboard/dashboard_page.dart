@@ -92,7 +92,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       children: <Widget>[
                         Image(
                           image: NetworkImage(
-                              movie.poster),
+                              movie.poster == 'N/A' ? 'https://www.archute.com/wp-content/themes/fox/images/placeholder.jpg' : movie.poster),
                         ),
                         ListTile(
                           leading: Icon(Icons.movie),

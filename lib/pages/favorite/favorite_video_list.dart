@@ -27,7 +27,7 @@ class _FavoriteVideoListPageState extends State<FavoriteVideoListPage> {
     return Card(
         margin: EdgeInsets.only(left: 60, right: 60, top: 10, bottom: 10),
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         child: Column(
           children: <Widget>[
             GestureDetector(
@@ -39,7 +39,7 @@ class _FavoriteVideoListPageState extends State<FavoriteVideoListPage> {
                   );
               },
               child: Image(
-                image: NetworkImage(movie.poster),
+                image: NetworkImage(movie.poster == 'N/A' ? 'https://www.archute.com/wp-content/themes/fox/images/placeholder.jpg' : movie.poster),
               ),
             ),
             ListTile(

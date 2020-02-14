@@ -31,7 +31,7 @@ class MovieDemoWs {
       "label": label,
       "priority": int.parse(priority.isEmpty ? "0": priority),
       "viewed": viewed,
-      "rating": (double.parse(rating)).round(),
+      "rating": (double.parse(rating=='N/A'? '0' : rating)).round(),
       "timestamp": timestamp,
       "title": title,
       "year": year,

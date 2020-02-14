@@ -96,7 +96,7 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
                       children: <Widget>[
                         Image(
                           image: NetworkImage(
-                              movie.poster),
+                              movie.poster == 'N/A' ? 'https://www.archute.com/wp-content/themes/fox/images/placeholder.jpg' : movie.poster),
                         ),
                         ListTile(
                           leading: Icon(Icons.movie),
@@ -115,7 +115,7 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
                     onChanged: (bool value) {
                       _isViewed = value;
                     }),
-                textFieldComponent(movie.rating, 'Rating', ratingController),
+                textFieldComponent(movie.rating == 'N/A' ? '0' : movie.rating, 'Rating', ratingController),
                 textFieldComponent(DateTime.fromMillisecondsSinceEpoch(movie.timestamp * 1000).toString(), 'Timestamp', timestampController),
               ],
             ),
