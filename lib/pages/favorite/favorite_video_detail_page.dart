@@ -78,7 +78,7 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
         actions: <Widget>[
           IconButton(icon: Icon(Icons.save), 
           onPressed: () {
-
+            FocusScope.of(context).unfocus();
             savingProcess(movie, token);
           }),
           SizedBox(

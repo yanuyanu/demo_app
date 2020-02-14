@@ -89,12 +89,13 @@ class _SearchPageState extends State<SearchPageState> {
   }
 
   Expanded _buildFilterTextField(
-      int flex, String hintText, TextEditingController textEditingController) {
+      int flex, String hintText, TextEditingController textEditingController, TextInputType textInputType) {
     return Expanded(
       flex: flex,
       child: TextField(
+
         controller: textEditingController,
-        keyboardType: TextInputType.text,
+        keyboardType: textInputType,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.only(
               top: 5,
@@ -212,16 +213,17 @@ class _SearchPageState extends State<SearchPageState> {
                 child: Center(
                   child: Row(
                     children: <Widget>[
-                      _buildFilterTextField(3, 'Title', titleFilterTextField),
+                      _buildFilterTextField(3, 'Title', titleFilterTextField, TextInputType.text),
                       SizedBox(
                         width: 5,
                       ),
-                      _buildFilterTextField(1, 'YYYY', yearFilterTextField),
+                      _buildFilterTextField(1, 'YYYY', yearFilterTextField, TextInputType.datetime),
                       Padding(
                         padding: EdgeInsets.only(right: 8.0),
                         child: IconButton(
                             icon: Icon(Icons.search),
                             onPressed: () {
+                              FocusScope.of(context).unfocus();
                               _searchMovie(titleFilterTextField.text,
                                   yearFilterTextField.text);
                             }),
