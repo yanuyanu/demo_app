@@ -34,15 +34,11 @@ class _SplashPageState extends State<SplashPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              width: 120,
-              height: 120,
-              color: Colors.blue,
-            ),
             Text(
               'Video App',
               style: TextStyle(height: 1, fontSize: 40),
             ),
+            Image.network('https://www.eudeka.id/wp-content/uploads/2019/11/flutter-logo-square-700x700.png'),
           ],
         ),
       ),
@@ -54,7 +50,7 @@ class _SplashPageState extends State<SplashPage> {
         maintainState: true,
         opaque: true,
         pageBuilder: (context, animation, secondaryAnimation) => new Login(),
-        transitionDuration: const Duration(seconds: 2),
+        transitionDuration: const Duration(seconds: 3),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return child;
         }));

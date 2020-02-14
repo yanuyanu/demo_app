@@ -76,7 +76,8 @@ class _FavoriteDetailState extends State<FavoriteDetailPage> {
           appBar: AppBar(
         title: Text('Movie Editor'),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.save), 
+          IconButton(
+            icon: Icon(Icons.save),
           onPressed: () {
             FocusScope.of(context).unfocus();
             savingProcess(movie, token);

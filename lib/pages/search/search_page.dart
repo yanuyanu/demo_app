@@ -37,6 +37,7 @@ class _SearchPageState extends State<SearchPageState> {
   int _totalPage = 0;
 
   void _searchNextPage(String title, String year, int page, String totalResults) {
+    FocusScope.of(context).unfocus();
     if (_currentPage < _totalPage) {
       setState(() {
         _currentPage = _currentPage + 1;
@@ -52,6 +53,7 @@ class _SearchPageState extends State<SearchPageState> {
   }
 
   void _searchPreviousPage(String title, String year, int page, String totalResults) {
+    FocusScope.of(context).unfocus();
     if (_currentPage > 1) {
       setState(() {
         _currentPage = _currentPage - 1;
@@ -78,6 +80,7 @@ class _SearchPageState extends State<SearchPageState> {
   }
 
   void _searchMovie(String title, String year) {
+    FocusScope.of(context).unfocus();
     MovieRespository()
         .findAllByTitleAndYear(title, year, 1)
         .then((val) => setState(() {
@@ -93,7 +96,6 @@ class _SearchPageState extends State<SearchPageState> {
     return Expanded(
       flex: flex,
       child: TextField(
-
         controller: textEditingController,
         keyboardType: textInputType,
         decoration: InputDecoration(
@@ -201,6 +203,7 @@ class _SearchPageState extends State<SearchPageState> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(120),
         child: AppBar(
@@ -223,7 +226,6 @@ class _SearchPageState extends State<SearchPageState> {
                         child: IconButton(
                             icon: Icon(Icons.search),
                             onPressed: () {
-                              FocusScope.of(context).unfocus();
                               _searchMovie(titleFilterTextField.text,
                                   yearFilterTextField.text);
                             }),
@@ -236,29 +238,38 @@ class _SearchPageState extends State<SearchPageState> {
         ),
       ),
       drawer: DrawerPage(),
-      body: FutureBuilder(
-          future: _resultMovie,
-          builder: (context, projectSnap) {
-            if (projectSnap.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if ((projectSnap.connectionState == ConnectionState.none &&
-                    !projectSnap.hasData) ||
-                (projectSnap.hasData && projectSnap.data.response == 'False')) {
-              //print('project snapshot data is: ${projectSnap.data}');
-              return Container(
-                child: Center(
-                  child: Text('no data found'),
-                ),
-              );
-            }
-            if (projectSnap.connectionState == ConnectionState.done) {
-              MovieOmdb movie = projectSnap.data;
-              return showPageInformation(movie);
-            }
+      body: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).unfocus();
+        },
+              child: FutureBuilder(
+            future: _resultMovie,
+            builder: (context, projectSnap) {
+              
+              if (projectSnap.connectionState == ConnectionState.waiting) {
+                if(projectSnap.data == null){
+                  return Center(child: CircularProgressIndicator());
+                }
+                return showPageInformation(projectSnap.data);
+              }
+              if ((projectSnap.connectionState == ConnectionState.none &&
+                      !projectSnap.hasData) ||
+                  (projectSnap.hasData && projectSnap.data.response == 'False')) {
+                //print('project snapshot data is: ${projectSnap.data}');
+                return Container(
+                  child: Center(
+                    child: Text('no data found'),
+                  ),
+                );
+              }
+              if (projectSnap.connectionState == ConnectionState.done) {
+                MovieOmdb movie = projectSnap.data;
+                return showPageInformation(movie);
+              }
 
-            return null;
-          }),
+              return null;
+            }),
+      ),
     );
   }
 }

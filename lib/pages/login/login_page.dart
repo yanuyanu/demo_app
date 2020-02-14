@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
                     ), 
                     hintText: 'Token',
                     filled: true,
-                    fillColor: Colors.grey[300],
+                    fillColor: Colors.blue[50],
                     ),
               ),
             ),
@@ -55,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   borderRadius: BorderRadius.circular(20)
                 ),
                 onPressed: () {
+                  FocusScope.of(context).unfocus();
                   MovieRespository().setValue(SessionEnum.TOKEN.toString(), tokenTextFieldController.text);
                   Navigator.of(context).pushReplacement(new PageRouteBuilder(
                       maintainState: true,
