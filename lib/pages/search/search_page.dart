@@ -46,7 +46,6 @@ class _SearchPageState extends State<SearchPageState> {
             .then((val) => setState(() {
                   _resultMovie = MovieRespository()
                       .findAllByTitleAndYear(title, year, _currentPage);
-                  _totalPage = (double.parse(totalResults) / 10).round() +1;
                 }));
       });
     }
@@ -62,9 +61,17 @@ class _SearchPageState extends State<SearchPageState> {
             .then((val) => setState(() {
                   _resultMovie = MovieRespository()
                       .findAllByTitleAndYear(title, year, _currentPage);
-                  _totalPage = (double.parse(totalResults) / 10).round() +1;
                 }));
       });
+    }
+  }
+
+  int _calculateTotalPage(String totalPage){
+    int total = int.parse(totalPage);
+    if(total % 10 == 0 || total < 10){
+      return (double.parse(totalPage)/10).round();
+    }else{
+      return (double.parse(totalPage)/10).round()+1;
     }
   }
 
@@ -73,7 +80,7 @@ class _SearchPageState extends State<SearchPageState> {
         .findAllByTitleAndYear(title, year, 1)
         .then((val) => setState(() {
           _currentPage = 1;
-          _totalPage = (double.parse(val.totalResults)/10).round() + 1;
+          _totalPage = _calculateTotalPage(val.totalResults);
           _resultMovie =
               MovieRespository().findAllByTitleAndYear(title, year, 1);
             }));
