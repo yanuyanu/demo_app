@@ -73,7 +73,7 @@ class _SearchPageState extends State<SearchPageState> {
         .findAllByTitleAndYear(title, year, 1)
         .then((val) => setState(() {
           _currentPage = 1;
-          _totalPage = (double.parse(val.totalResults)/10).round();
+          _totalPage = (double.parse(val.totalResults)/10).round() + 1;
           _resultMovie =
               MovieRespository().findAllByTitleAndYear(title, year, 1);
             }));
